@@ -136,15 +136,22 @@ export default function Home() {
 
   useEffect(() => {
     setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === "1") {
-          // it's important that you create a new object here
-          // in order to notify react flow about the change
+      nds.map((node, i) => {
+        if (i == nodes.length - 1) {
           node.data = {
             ...node.data,
-            label: gptText,
+            content: gptText,
           };
         }
+
+        // if (node.id === nodes.length.toString()) {
+        //   // it's important that you create a new object here
+        //   // in order to notify react flow about the change
+        //   node.data = {
+        //     ...node.data,
+        //     label: gptText,
+        //   };
+        // }
         return node;
       })
     );
@@ -171,8 +178,11 @@ export default function Home() {
       onUpdate: handleUpdate,
     };
 
-    setNodes((prevNodes) => [...prevNodes, newNode]);
 
+    // Check the selected nodes and use it as input
+
+    setNodes((prevNodes) => [...prevNodes, newNode]);
+    generateStory();
 
     // const partSelect = document.getElementById("part");
     // const partValue = partSelect.value;
@@ -204,7 +214,7 @@ export default function Home() {
     });
 
     prompt = globalContentString;
-
+    prompt = "What is 2 + 2?";
     askChatGPT(prompt);
   };
 
