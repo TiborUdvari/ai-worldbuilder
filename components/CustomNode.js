@@ -43,6 +43,8 @@ function CustomNode({ id, data, selected }) {
         <div className="ml-2">
           <div className="text-lg font-bold">{data.name}</div>
           <div className="text-gray-500">{data.part}</div>
+          <div className="text-gray-500">{"selected val " + JSON.stringify(selected)}</div>
+
         </div>
       </div>
       <div className="nodrag">

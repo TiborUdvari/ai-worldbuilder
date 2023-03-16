@@ -117,7 +117,7 @@ export default function Home() {
       position: { x: 10, y: 10 },
     },
   ];
-  const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+  const initialEdges = [];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
