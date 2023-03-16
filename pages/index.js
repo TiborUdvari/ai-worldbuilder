@@ -121,6 +121,11 @@ export default function Home() {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [selectedValue, setSelectedValue] = useState('Character'); // initialize state with an empty string
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  }
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -144,6 +149,47 @@ export default function Home() {
       })
     );
   }, [gptText, setGPTText]);
+
+  const generate = () => {
+
+    // get the value of the parts select
+    console.log("Selected value");
+    console.log(selectedValue);
+    let part = selectedValue;
+    const nodeId = (nodes.length + 1).toString();
+
+    const newNode = {
+      id: nodeId,
+      type: "custom",
+      data: {
+        name: "Empty name",
+        part: part,
+        onUpdate: handleUpdate,
+        content: "--- Empty content",
+      },
+      position: { x: 0, y: 50 },
+      onUpdate: handleUpdate,
+    };
+
+    setNodes((prevNodes) => [...prevNodes, newNode]);
+
+
+    // const partSelect = document.getElementById("part");
+    // const partValue = partSelect.value;
+    // console.log("Tibor parts")
+    // console.log(partValue)
+
+    
+    // get the value of the select label and add a custom node of that type to the nodes array
+    
+    // get the value of the select label and add a custom node of that type to the nodes array
+    
+    
+    // todo: check on what we add based on what is selected
+
+
+
+  };
 
   const generateStory = () => {
     // filter the nodes array to get the nodes that have a part of "Global"
@@ -227,6 +273,7 @@ export default function Home() {
         <select
           id="parts"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          value={selectedValue} onChange={handleChange}
         >
           <option value="Character">Character</option>
           <option value="Global">Global</option>
@@ -237,7 +284,7 @@ export default function Home() {
         <button
           id="generateBtn"
           className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
-          onClick={() => generateStory()}
+          onClick={() => generate()}
         >
           Generate
         </button>
