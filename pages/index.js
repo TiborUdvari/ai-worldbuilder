@@ -1,5 +1,8 @@
 // todo - find a way to select certain nodes and not others
 // todo - create a new thing
+// todo pass in the title
+// save and load data
+// save image
 
 import React, { useCallback, useState, useRef, useEffect } from "react";
 
@@ -48,23 +51,23 @@ export default function Home() {
   };
 
   const initialNodes = [
+    // {
+    //   id: "1",
+    //   type: "default",
+    //   className: "annotation",
+    //   data: {
+    //     label: "Story",
+    //   },
+    //   // draggable: false,
+    //   selectable: false,
+    //   position: { x: 500, y: 500 },
+    //   style: {
+    //     width: 500,
+    //     height: 500,
+    //   },
+    // },
     {
       id: "1",
-      type: "default",
-      className: "annotation",
-      data: {
-        label: "Story",
-      },
-      // draggable: false,
-      selectable: false,
-      position: { x: 500, y: 500 },
-      style: {
-        width: 500,
-        height: 500,
-      },
-    },
-    {
-      id: "2",
       type: "custom",
       data: {
         name: "Simple prompt",
@@ -77,13 +80,27 @@ export default function Home() {
     },
 
     {
+      id: "2",
+      type: "custom",
+      data: {
+        name: "Arthur Dent",
+        part: "Character",
+        onUpdate: handleUpdate,
+        content:
+          "Initially a bit of a wet blanket, Arthur becomes increasingly adventurous and quick-witted as he travels through space. He is loyal to his friends and has a dry sense of humor.",
+      },
+      position: { x: 0, y: 50 },
+      onUpdate: handleUpdate,
+    },
+    {
       id: "3",
       type: "custom",
       data: {
-        name: "Jane Doe",
+        name: "Ford Prefect",
         part: "Character",
         onUpdate: handleUpdate,
-        content: "this is some content about the character",
+        content:
+          "Ford is clever and quick-witted, with a dry sense of humor. He is also adventurous and enjoys exploring the galaxy. He can sometimes come across as aloof or detached, but he is fiercely loyal to his friends.",
       },
       position: { x: 0, y: 50 },
       onUpdate: handleUpdate,
@@ -92,47 +109,89 @@ export default function Home() {
       id: "4",
       type: "custom",
       data: {
-        name: "The haunted house",
+        name: "Magrathea",
         part: "Location",
         onUpdate: handleUpdate,
-        content: "this is some content about the haunted house",
+        content: `Name: Magrathea
+        Type: Planet
+        Inhabitants: The creators of custom-made luxury planets
+        Appearance: Magrathea is a rocky, desolate planet that appears to be extinct on the surface. However, it is later revealed to be inhabited by the planet's creators, who live in underground cities and factories.
+        
+        Climate: The climate on Magrathea is unknown, as it is not described in detail in the story.
+        
+        Culture: The inhabitants of Magrathea are known for their ability to create custom-made luxury planets. They are incredibly wealthy and powerful, but are thought to be extinct by the rest of the galaxy.
+        
+        Significance: Magrathea plays a key role in the story, as it is the location where the Heart of Gold crew discovers the plans for Earth, which was created by the inhabitants of Magrathea as a giant computer to calculate the meaning of life. Magrathea also provides a setting for many of the novel's philosophical discussions about the nature of existence and the purpose of life.
+        
+        Features: Magrathea is known for its factories and underground cities, which are filled with advanced technology and machinery. The planet also has a network of artificial suns, which were created to power the planet's surface before it became extinct.
+        
+        Hazards: The main hazard on Magrathea is the planet's advanced security system, which is designed to prevent unauthorized visitors from accessing the planet's secrets. This security system includes robots, force fields, and other defensive measures.`,
       },
       position: { x: 0, y: 50 },
       onUpdate: handleUpdate,
     },
     {
       id: "5",
-      type: "default",
-      className: "annotation",
+      type: "custom",
       data: {
-        label: (
-          <>
-            Hi! Welcome to AI Storybuilder. Click on the generate button to
-            generate a story. 🥳
-          </>
-        ),
+        name: "Vogon construction ship",
+        part: "Location",
+        onUpdate: handleUpdate,
+        content: `Description:
+
+        The Vogon Constructor Ship B-789 is a massive vessel, measuring over 10 miles in length. The ship's exterior is constructed from heavy, gray metal, with large, blocky structures and harsh, angular lines. The ship's appearance is utilitarian, with no decorative or aesthetic features.
+        
+        The interior of the ship is notoriously unpleasant, featuring dimly-lit, grimy corridors and cramped, windowless compartments. The air inside the ship is stale and unpleasant, with a pervasive odor of rot and decay. The ship's main bridge is manned by a crew of Vogons, who oversee the ship's demolition activities and navigational systems.
+        
+        Features:
+        
+        The Vogon spaceship is powered by an Infinite Improbability Drive, a highly advanced piece of technology that allows it to travel through space and time with incredible speed and unpredictability.
+        The ship is equipped with a variety of advanced weapons and defense systems, including laser cannons and shields, which are used to protect the ship during its demolition missions.
+        The Vogon Constructor Ship is crewed by Vogons, a highly bureaucratic and sadistic alien race known for their love of poetry and torture.
+        The ship's demolition activities are highly organized and systematic, with the Vogons using a variety of tools and methods to destroy planets and clear the way for new hyperspace bypasses.`,
       },
-      draggable: true,
-      selectable: false,
-      position: { x: 10, y: 10 },
+      position: { x: 0, y: 50 },
+      onUpdate: handleUpdate,
     },
+
+
+
+
+
+
+    // {
+    //   id: "4",
+    //   type: "default",
+    //   className: "annotation",
+    //   data: {
+    //     label: (
+    //       <>
+    //         Hi! Welcome to AI Storybuilder. Click on the generate button to
+    //         generate a story. 🥳
+    //       </>
+    //     ),
+    //   },
+    //   draggable: true,
+    //   selectable: false,
+    //   position: { x: 10, y: 10 },
+    // },
   ];
   const initialEdges = [];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedValue, setSelectedValue] = useState('Character'); // initialize state with an empty string
+  const [selectedValue, setSelectedValue] = useState("Character"); // initialize state with an empty string
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-  }
+  };
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  const [gptText, setGPTText] = useState("GPT Text");
+  const [gptText, setGPTText] = useState(initialNodes[initialNodes.length - 1].data.content);
 
   useEffect(() => {
     setNodes((nds) =>
@@ -158,8 +217,6 @@ export default function Home() {
   }, [gptText, setGPTText]);
 
   const generate = () => {
-
-    // get the value of the parts select
     console.log("Selected value");
     console.log(selectedValue);
     let part = selectedValue;
@@ -178,44 +235,54 @@ export default function Home() {
       onUpdate: handleUpdate,
     };
 
-
-    // Check the selected nodes and use it as input
-
     setNodes((prevNodes) => [...prevNodes, newNode]);
     generateStory();
-
-    // const partSelect = document.getElementById("part");
-    // const partValue = partSelect.value;
-    // console.log("Tibor parts")
-    // console.log(partValue)
-
-    
-    // get the value of the select label and add a custom node of that type to the nodes array
-    
-    // get the value of the select label and add a custom node of that type to the nodes array
-    
-    
-    // todo: check on what we add based on what is selected
-
-
-
   };
 
   const generateStory = () => {
-    // filter the nodes array to get the nodes that have a part of "Global"
-    const globalNodes = nodes.filter((node) => node.data.part === "Global");
+    // find the selected custom nodes and order them by their x position
+    const customNodes = nodes.filter((node) => node.type === "custom");
+    const orderedCustomNodes = customNodes.sort(
+      (a, b) => a.position.x - b.position.x
+    );
 
-    // get the content of the global nodes
-    const globalContent = globalNodes.map((node) => node.data.content);
+    const customContent = orderedCustomNodes.map((node) => node.data.content);
+    const customContentString = customContent.reduce((acc, cur) => {
+      let prefacingText = "";
 
-    // reduce the globalcontent array to a single string
-    const globalContentString = globalContent.reduce((acc, cur) => {
-      return acc + " " + cur;
+      if (cur.data.part !== "Global") {
+        prefacingText = `Include the following ${cur.data.part.toLowerCase()}: ${cur.data.name}`;
+
+      }
+      return acc + " " + prefacingText + cur;
     });
 
+    // filter the nodes array to get the nodes that have a part of "Global"
+    // const globalNodes = nodes.filter((node) => node.data.part === "Global");
+
+    // // get the content of the global nodes
+    // const globalContent = globalNodes.map((node) => node.data.content);
+
+    // // reduce the globalcontent array to a single string
+    // const globalContentString = globalContent.reduce((acc, cur) => {
+    //   return acc + " " + cur;
+    // });
+
+    prompt = customContentString;
+    console.log("The prompt is " + prompt);
+    if (prompt.length > 0) {
+
+
+
+      prompt =
+        prompt +
+        " Output only the results and no commentary. Be brief, no more than 3 sentences.";
+      askChatGPT(prompt);
+    }
+    /*
     prompt = globalContentString;
     prompt = "What is 2 + 2?";
-    askChatGPT(prompt);
+    askChatGPT(prompt);*/
   };
 
   function askChatGPT(question) {
@@ -269,10 +336,9 @@ export default function Home() {
           right: "10px",
           top: "10px",
           width: "200px",
-          gap: "0.5em"          
+          gap: "0.5em",
         }}
         className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"
-        
       >
         {/* <label
           for="parts"
@@ -283,7 +349,8 @@ export default function Home() {
         <select
           id="parts"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          value={selectedValue} onChange={handleChange}
+          value={selectedValue}
+          onChange={handleChange}
         >
           <option value="Character">Character</option>
           <option value="Global">Global</option>
