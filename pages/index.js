@@ -182,6 +182,8 @@ export default function Home() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedValue, setSelectedValue] = useState("Character"); // initialize state with an empty string
   const [rfInstance, setRfInstance] = useState(null);
+  const fileInputRef = useRef(null);
+  const saveButtonRef = useRef(null);
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -199,6 +201,16 @@ export default function Home() {
         
         if (json) {
           const { x = 0, y = 0, zoom = 1 } = json.viewport;
+          // onUpdate: handleUpdate,
+          // foreach json.nodes add onUpdate: handleUpdate
+
+          // map json.nodes to add onUpdate: handleUpdate
+          // map json.edges to add onUpdate: handleUpdate
+
+          json.nodes.forEach(element => {
+            element.onUpdate = handleUpdate;
+          });
+          
           setNodes(json.nodes || []);
           setEdges(json.edges || []);
           // setViewport({ x, y, zoom });
@@ -278,7 +290,7 @@ export default function Home() {
       let prefacingText = "";
 
       if (cur.data.part !== "Global") {
-        prefacingText = `Include the following ${cur.data.part.toLowerCase()}: ${cur.data.name}`;
+        prefacingText = `Inspire yourself from ${cur.data.part.toLowerCase()}: ${cur.data.name}, `;
 
       }
       return acc + " " + prefacingText + cur.data.content;
@@ -297,7 +309,7 @@ export default function Home() {
 
     prompt = customContentString;
     if (prompt.length > 0) {
-      prompt = `You are in a worldbuilding context. Write a new ${part} sheet.` + prompt;
+      prompt = `You are in a worldbuilding context. Write a new ${part}.` + prompt;
       prompt =
         prompt +
         " Output only the results and no commentary. Be brief, no more than 3 sentences.";
@@ -360,6 +372,31 @@ export default function Home() {
     setNodes((prevNodes) => [...prevNodes, newNode]);
   }, [nodes, setNodes]);
 
+
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      console.log("The event keycode is");
+      console.log(event.keyCode);
+      // q and w save and load
+      // 81 - 
+      // 87 -
+      if (event.keyCode == 222) {
+        // onSave();
+        saveButtonRef.current.click();
+      } else if (event.keyCode == 220) {
+        fileInputRef.current.click();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <ReactFlow
@@ -411,9 +448,11 @@ export default function Home() {
         >
           Generate
         </button>
+
         <button
-          id="generateBtn"
-          className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
+          id="saveBtn"
+          ref={saveButtonRef}
+          className="hidden bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
           onClick={() => onSave()}
         >
           Save
@@ -422,8 +461,9 @@ export default function Home() {
         <input 
         id="fileInput" 
         type="file" 
+        ref={fileInputRef}
         onChange={handleFileInput}
-        className="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
+        className="hidden py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
       />
       </div>
     </div>
