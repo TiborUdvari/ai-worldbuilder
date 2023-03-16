@@ -226,7 +226,7 @@ export default function Home() {
       id: nodeId,
       type: "custom",
       data: {
-        name: "Empty name",
+        name: `New ${part}`,
         part: part,
         onUpdate: handleUpdate,
         content: "--- Empty content",
@@ -236,26 +236,26 @@ export default function Home() {
     };
 
     setNodes((prevNodes) => [...prevNodes, newNode]);
-    generateStory();
+    generateStory(part);
   };
 
-  const generateStory = () => {
+  const generateStory = (part) => {
     // find the selected custom nodes and order them by their x position
-    const customNodes = nodes.filter((node) => node.type === "custom");
+    const customNodes = nodes.filter((node) => node.type === "custom" && node.selected === true);
     const orderedCustomNodes = customNodes.sort(
       (a, b) => a.position.x - b.position.x
     );
 
-    const customContent = orderedCustomNodes.map((node) => node.data.content);
-    const customContentString = customContent.reduce((acc, cur) => {
+    const customContentString = orderedCustomNodes.reduce((acc, cur) => {
+      console.log("current is " + JSON.stringify(cur) );
       let prefacingText = "";
 
       if (cur.data.part !== "Global") {
         prefacingText = `Include the following ${cur.data.part.toLowerCase()}: ${cur.data.name}`;
 
       }
-      return acc + " " + prefacingText + cur;
-    });
+      return acc + " " + prefacingText + cur.data.content;
+    }, "");
 
     // filter the nodes array to get the nodes that have a part of "Global"
     // const globalNodes = nodes.filter((node) => node.data.part === "Global");
@@ -269,14 +269,12 @@ export default function Home() {
     // });
 
     prompt = customContentString;
-    console.log("The prompt is " + prompt);
     if (prompt.length > 0) {
-
-
-
+      prompt = `You are in a worldbuilding context. Write a new ${part} sheet.` + prompt;
       prompt =
         prompt +
         " Output only the results and no commentary. Be brief, no more than 3 sentences.";
+        console.log("The prompt is " + prompt);
       askChatGPT(prompt);
     }
     /*
