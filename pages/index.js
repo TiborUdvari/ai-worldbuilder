@@ -1,7 +1,5 @@
 // todo - find a way to select certain nodes and not others
 
-// to
-
 import React, { useCallback, useState, useRef, useEffect } from "react";
 
 import ReactFlow, {
@@ -147,6 +145,24 @@ export default function Home() {
     );
   }, [gptText, setGPTText]);
 
+  const generateStory = () => {
+    
+    // filter the nodes array to get the nodes that have a part of "Global"
+    const globalNodes = nodes.filter((node) => node.data.part === "Global");
+
+    // get the content of the global nodes
+    const globalContent = globalNodes.map((node) => node.data.content);
+
+    // reduce the globalcontent array to a single string
+    const globalContentString = globalContent.reduce((acc, cur) => {
+      return acc + " " + cur;
+    });
+
+    prompt = globalContentString;
+
+    askChatGPT(prompt);
+  };
+
   function askChatGPT(question) {
     var id = "oilfjaabefbjoagnomallidmlpkbfcfm";
     const port = chrome.runtime.connect(id);
@@ -197,12 +213,12 @@ export default function Home() {
 
       <button
         id="generateBtn"
+        className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
         onClick={() => askChatGPT("What is your favorite story?")}
       >
         Generate
       </button>
 
-      {/* <button id="generateBtn" onClick={addNode}>Generate</button> */}
     </div>
   );
 }
