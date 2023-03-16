@@ -181,9 +181,36 @@ export default function Home() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedValue, setSelectedValue] = useState("Character"); // initialize state with an empty string
+  const [rfInstance, setRfInstance] = useState(null);
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
+  };
+
+  const handleFileInput = (event) => {
+    // setSelectedFile(event.target.files[0]);
+    console.log(event.target.files[0]);
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        console.log("onload finished");
+        const json = JSON.parse(e.target.result);
+        
+        if (json) {
+          const { x = 0, y = 0, zoom = 1 } = json.viewport;
+          setNodes(json.nodes || []);
+          setEdges(json.edges || []);
+          // setViewport({ x, y, zoom });
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    reader.readAsText(file);
+
+
   };
 
   const onConnect = useCallback(
@@ -300,6 +327,26 @@ export default function Home() {
     port.postMessage({ question });
   }
 
+  function downloadJsonFile(jsonData) {
+    const jsonString = JSON.stringify(jsonData);
+    const dataUri = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+    const downloadLink = document.createElement('a');
+    downloadLink.setAttribute('href', dataUri);
+    downloadLink.setAttribute('download', 'data.json');
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
+
+  const onSave = useCallback(() => {
+    console.log("Saving the flow")
+    if (rfInstance) {
+      const flow = rfInstance.toObject();
+      downloadJsonFile(flow);
+      // localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [rfInstance]);
+
   // create the function to add a node
   const addNode = useCallback(() => {
     // it has to be a custom node
@@ -322,6 +369,7 @@ export default function Home() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onInit={setRfInstance}
       >
         <Controls />
         <MiniMap />
@@ -363,6 +411,20 @@ export default function Home() {
         >
           Generate
         </button>
+        <button
+          id="generateBtn"
+          className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
+          onClick={() => onSave()}
+        >
+          Save
+        </button>
+
+        <input 
+        id="fileInput" 
+        type="file" 
+        onChange={handleFileInput}
+        className="py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
+      />
       </div>
     </div>
   );
