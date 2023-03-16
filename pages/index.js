@@ -51,7 +51,7 @@ export default function Home() {
 
   const initialNodes = [
     {
-      id: "4",
+      id: "1",
       type: "default",
       className: "annotation",
       data: {
@@ -66,7 +66,7 @@ export default function Home() {
       },
     },
     {
-      id: "5",
+      id: "2",
       type: "custom",
       data: {
         name: "Simple prompt",
@@ -79,7 +79,7 @@ export default function Home() {
     },
 
     {
-      id: "1000",
+      id: "3",
       type: "custom",
       data: {
         name: "Jane Doe",
@@ -91,7 +91,7 @@ export default function Home() {
       onUpdate: handleUpdate,
     },
     {
-      id: "1001",
+      id: "4",
       type: "custom",
       data: {
         name: "The haunted house",
@@ -103,13 +103,7 @@ export default function Home() {
       onUpdate: handleUpdate,
     },
     {
-      id: "1",
-      position: { x: 0, y: 0 },
-      data: { label: "This is a test prompt" },
-    },
-    { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-    {
-      id: "3",
+      id: "5",
       type: "default",
       className: "annotation",
       data: {
