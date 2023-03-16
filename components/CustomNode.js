@@ -35,8 +35,8 @@ function CustomNode({ id, data, selected }) {
 
   return (
     <div
-      className={`px-4 py-2 shadow-md rounded-md bg-white border-2  max-w-md ${
-        selected ? "border-gray-900 border-4" : "border-gray-400 border-2"
+      className={`px-4 py-2 shadow-md rounded-md bg-white border-4  max-w-md box-sizing-border-box ${
+        selected ? "border-gray-900 border-4" : "border-gray-50 border-4"
       }`}
     >
       <div className="flex">

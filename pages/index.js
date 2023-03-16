@@ -14,6 +14,7 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
 } from "reactflow";
+import { toPng } from 'html-to-image';
 
 import "reactflow/dist/style.css";
 
@@ -24,6 +25,8 @@ const nodeTypes = {
 };
 
 import "reactflow/dist/style.css";
+
+
 
 export default function Home() {
   const handleUpdate = (id, key, value) => {
@@ -201,11 +204,14 @@ export default function Home() {
 
           // map json.nodes to add onUpdate: handleUpdate
           // map json.edges to add onUpdate: handleUpdate
-
+          console.log("json before")
+          console.log(json.nodes)
           json.nodes.forEach((element) => {
             element.onUpdate = handleUpdate;
+            element.data.onUpdate = handleUpdate;
           });
-
+          console.log("after")
+          console.log(json.nodes);
           setNodes(json.nodes || []);
           setEdges(json.edges || []);
           // setViewport({ x, y, zoom });
@@ -225,6 +231,14 @@ export default function Home() {
   const [gptText, setGPTText] = useState(
     initialNodes[initialNodes.length - 1].data.content
   );
+
+  function downloadImage(dataUrl) {
+    const a = document.createElement('a');
+  
+    a.setAttribute('download', 'reactflow.png');
+    a.setAttribute('href', dataUrl);
+    a.click();
+  }
 
   useEffect(() => {
     setNodes((nds) =>
@@ -402,7 +416,24 @@ if (targetNodes.length > 0) {
       if (event.keyCode == 222) {
         // onSave();
         saveButtonRef.current.click();
-      } else if (event.keyCode == 220) {
+      } else if (event.keyCode == 187) {
+
+        toPng(document.querySelector('.react-flow'), {
+          filter: (node) => {
+            // we don't want to add the minimap and the controls to the image
+            if (
+              node?.classList?.contains('react-flow__minimap') ||
+              node?.classList?.contains('react-flow__controls')
+            ) {
+              return false;
+            }
+    
+            return true;
+          },
+        }).then(downloadImage);
+
+      }
+      else if (event.keyCode == 220) {
         fileInputRef.current.click();
       }
     };
