@@ -154,11 +154,6 @@ export default function Home() {
       onUpdate: handleUpdate,
     },
 
-
-
-
-
-
     // {
     //   id: "4",
     //   type: "default",
@@ -198,7 +193,7 @@ export default function Home() {
       try {
         console.log("onload finished");
         const json = JSON.parse(e.target.result);
-        
+
         if (json) {
           const { x = 0, y = 0, zoom = 1 } = json.viewport;
           // onUpdate: handleUpdate,
@@ -207,22 +202,19 @@ export default function Home() {
           // map json.nodes to add onUpdate: handleUpdate
           // map json.edges to add onUpdate: handleUpdate
 
-          json.nodes.forEach(element => {
+          json.nodes.forEach((element) => {
             element.onUpdate = handleUpdate;
           });
-          
+
           setNodes(json.nodes || []);
           setEdges(json.edges || []);
           // setViewport({ x, y, zoom });
         }
-
       } catch (error) {
         console.error(error);
       }
     };
     reader.readAsText(file);
-
-
   };
 
   const onConnect = useCallback(
@@ -230,7 +222,9 @@ export default function Home() {
     [setEdges]
   );
 
-  const [gptText, setGPTText] = useState(initialNodes[initialNodes.length - 1].data.content);
+  const [gptText, setGPTText] = useState(
+    initialNodes[initialNodes.length - 1].data.content
+  );
 
   useEffect(() => {
     setNodes((nds) =>
@@ -261,6 +255,26 @@ export default function Home() {
     let part = selectedValue;
     const nodeId = (nodes.length + 1).toString();
 
+    // Find the rightest custom node to the right of the screen
+
+// Find the rightest custom node to the right of the screen
+let targetX = 0;
+
+// Filter selected custom nodes and all custom nodes
+const selectedCustomNodes = nodes.filter(
+  (node) => node.type === "custom" && node.selected === true
+);
+const allCustomNodes = nodes.filter((node) => node.type === "custom");
+
+// Find the rightest custom node among the selected ones or all custom nodes
+const targetNodes = selectedCustomNodes.length > 0 ? selectedCustomNodes : allCustomNodes;
+if (targetNodes.length > 0) {
+  const rightestNode = targetNodes.reduce((rightest, node) =>
+    node.position.x > rightest.position.x ? node : rightest
+  );
+  targetX = rightestNode.position.x + 450;
+}
+
     const newNode = {
       id: nodeId,
       type: "custom",
@@ -270,7 +284,7 @@ export default function Home() {
         onUpdate: handleUpdate,
         content: "--- Empty content",
       },
-      position: { x: 0, y: 50 },
+      position: { x: targetX , y: 50 },
       onUpdate: handleUpdate,
     };
 
@@ -280,18 +294,21 @@ export default function Home() {
 
   const generateStory = (part) => {
     // find the selected custom nodes and order them by their x position
-    const customNodes = nodes.filter((node) => node.type === "custom" && node.selected === true);
+    const customNodes = nodes.filter(
+      (node) => node.type === "custom" && node.selected === true
+    );
     const orderedCustomNodes = customNodes.sort(
       (a, b) => a.position.x - b.position.x
     );
 
     const customContentString = orderedCustomNodes.reduce((acc, cur) => {
-      console.log("current is " + JSON.stringify(cur) );
+      console.log("current is " + JSON.stringify(cur));
       let prefacingText = "";
 
       if (cur.data.part !== "Global") {
-        prefacingText = `Inspire yourself from ${cur.data.part.toLowerCase()}: ${cur.data.name}, `;
-
+        prefacingText = `Inspire yourself from ${cur.data.part.toLowerCase()}: ${
+          cur.data.name
+        }, `;
       }
       return acc + " " + prefacingText + cur.data.content;
     }, "");
@@ -309,11 +326,12 @@ export default function Home() {
 
     prompt = customContentString;
     if (prompt.length > 0) {
-      prompt = `You are in a worldbuilding context. Write a new ${part}.` + prompt;
+      prompt =
+        `You are in a worldbuilding context. Write a new ${part}.` + prompt;
       prompt =
         prompt +
         " Output only the results and no commentary. Be brief, no more than 3 sentences.";
-        console.log("The prompt is " + prompt);
+      console.log("The prompt is " + prompt);
       askChatGPT(prompt);
     }
     /*
@@ -341,17 +359,19 @@ export default function Home() {
 
   function downloadJsonFile(jsonData) {
     const jsonString = JSON.stringify(jsonData);
-    const dataUri = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
-    const downloadLink = document.createElement('a');
-    downloadLink.setAttribute('href', dataUri);
-    downloadLink.setAttribute('download', 'data.json');
+    const dataUri = `data:text/json;charset=utf-8,${encodeURIComponent(
+      jsonString
+    )}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.setAttribute("href", dataUri);
+    downloadLink.setAttribute("download", "data.json");
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
   }
 
   const onSave = useCallback(() => {
-    console.log("Saving the flow")
+    console.log("Saving the flow");
     if (rfInstance) {
       const flow = rfInstance.toObject();
       downloadJsonFile(flow);
@@ -372,14 +392,12 @@ export default function Home() {
     setNodes((prevNodes) => [...prevNodes, newNode]);
   }, [nodes, setNodes]);
 
-
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       console.log("The event keycode is");
       console.log(event.keyCode);
       // q and w save and load
-      // 81 - 
+      // 81 -
       // 87 -
       if (event.keyCode == 222) {
         // onSave();
@@ -389,13 +407,12 @@ export default function Home() {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -458,13 +475,13 @@ export default function Home() {
           Save
         </button>
 
-        <input 
-        id="fileInput" 
-        type="file" 
-        ref={fileInputRef}
-        onChange={handleFileInput}
-        className="hidden py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
-      />
+        <input
+          id="fileInput"
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileInput}
+          className="hidden py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm focus:outline-none focus:border-blue-500 focus:ring-blue-500 focus:ring-offset-2 focus:ring-2"
+        />
       </div>
     </div>
   );
