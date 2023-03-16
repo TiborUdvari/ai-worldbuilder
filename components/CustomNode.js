@@ -42,7 +42,6 @@ function CustomNode({ id, data, selected }) {
         </div>
         <div className="ml-2">
           <div className="text-lg font-bold">{data.name}</div>
-          <div className="text-gray-500">{selected ? "Selected" : "Not selected"}</div>
           <div className="text-gray-500">{data.part}</div>
         </div>
       </div>

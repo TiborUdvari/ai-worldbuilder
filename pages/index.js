@@ -1,4 +1,5 @@
 // todo - find a way to select certain nodes and not others
+// todo - create a new thing
 
 import React, { useCallback, useState, useRef, useEffect } from "react";
 
@@ -26,9 +27,8 @@ export default function Home() {
     console.log("handle update " + id + " " + key + " " + value);
     setNodes((nds) =>
       nds.map((node) => {
-
         if (node.id === id) {
-          console.log("found node")
+          console.log("found node");
           node.data = {
             ...node.data,
             [key]: value,
@@ -146,7 +146,6 @@ export default function Home() {
   }, [gptText, setGPTText]);
 
   const generateStory = () => {
-    
     // filter the nodes array to get the nodes that have a part of "Global"
     const globalNodes = nodes.filter((node) => node.data.part === "Global");
 
@@ -182,7 +181,6 @@ export default function Home() {
 
   // create the function to add a node
   const addNode = useCallback(() => {
-
     // it has to be a custom node
 
     const nodeId = (nodes.length + 1).toString();
@@ -209,14 +207,41 @@ export default function Home() {
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
 
-      <button
-        id="generateBtn"
-        className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
-        onClick={() => generateStory()}
+      <div
+        style={{
+          position: "absolute",
+          right: "10px",
+          top: "10px",
+          width: "200px",
+          gap: "0.5em"          
+        }}
+        className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"
+        
       >
-        Generate
-      </button>
+        {/* <label
+          for="parts"
+          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >
+          Select an option
+        </label> */}
+        <select
+          id="parts"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >
+          <option value="Character">Character</option>
+          <option value="Global">Global</option>
+          <option value="Plot">Plot</option>
+          <option value="Location">Location</option>
+        </select>
 
+        <button
+          id="generateBtn"
+          className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
+          onClick={() => generateStory()}
+        >
+          Generate
+        </button>
+      </div>
     </div>
   );
 }
