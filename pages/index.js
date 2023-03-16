@@ -182,10 +182,8 @@ export default function Home() {
 
   // create the function to add a node
   const addNode = useCallback(() => {
-    // Call chatgpt generation with default prompt
 
-    // update the text of the last added node
-    // just get the reference of a node and update it
+    // it has to be a custom node
 
     const nodeId = (nodes.length + 1).toString();
     const newNode = {
@@ -214,7 +212,7 @@ export default function Home() {
       <button
         id="generateBtn"
         className="bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 focus:ring-opacity-50 text-white font-bold py-2 px-4 rounded-lg shadow-xl"
-        onClick={() => askChatGPT("What is your favorite story?")}
+        onClick={() => generateStory()}
       >
         Generate
       </button>
