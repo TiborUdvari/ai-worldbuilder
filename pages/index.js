@@ -355,7 +355,7 @@ if (targetNodes.length > 0) {
   };
 
   function askChatGPT(question) {
-    var id = "oilfjaabefbjoagnomallidmlpkbfcfm";
+    var id = "eangjmcicbgopnnccclhhafapkckfjlk";
     const port = chrome.runtime.connect(id);
 
     port.onMessage.addListener(function (msg) {
